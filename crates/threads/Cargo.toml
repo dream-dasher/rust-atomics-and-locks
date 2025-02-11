@@ -29,7 +29,7 @@ derive_more = { workspace = true }
 clap = { workspace = true }
 # clap-verbosity-flag = { workspace = true }
 # dialoguer = { workspace = true }
-# owo-colors = { workspace = true }
+owo-colors = { workspace = true }
 
 ## --Parsing--
 # monostate = { workspace = true }                     # serde: constraining, zero-sized type

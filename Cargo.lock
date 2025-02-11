@@ -970,6 +970,7 @@ dependencies = [
  "derive_more",
  "divan",
  "insta",
+ "owo-colors",
  "pretty_assertions",
  "quickcheck",
  "quickcheck_macros",
