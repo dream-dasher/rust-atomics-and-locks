@@ -12,13 +12,13 @@ use tracing as tea;
 fn main() {
         // fn main() -> Result<()> {
         let start_time = std::time::Instant::now();
-        let _writer_guard = {
-                utilities::activate_global_default_tracing_subscriber()
-                        .maybe_env_default_level(None)
-                        .maybe_trace_error_level(None)
-                        .call()
-                        .unwrap()
-        };
+        // let _writer_guard = {
+        //         utilities::activate_global_default_tracing_subscriber()
+        //                 .maybe_env_default_level(None)
+        //                 .maybe_trace_error_level(None)
+        //                 .call()
+        //                 .expect("Failed to set up tracing subscriber.")
+        // };
 
         for _ in 0..500 {
                 thread::spawn(f);
