@@ -6,28 +6,27 @@ use std::thread;
 
 use crate::error::ErrWrapper;
 pub type Result<T> = std::result::Result<T, ErrWrapper>;
-// use colored::Colorize;
 use owo_colors::OwoColorize;
-
-// use tracing as tea;
+use tracing as tea;
 
 fn main() {
         // fn main() -> Result<()> {
-        // let start_time = std::time::Instant::now();
-        // let _writer_guard = {
-        //         utilities::activate_global_default_tracing_subscriber()
-        //                 .maybe_env_default_level(None)
-        //                 .maybe_trace_error_level(None)
-        //                 .call()?
-        // };
+        let start_time = std::time::Instant::now();
+        let _writer_guard = {
+                utilities::activate_global_default_tracing_subscriber()
+                        .maybe_env_default_level(None)
+                        .maybe_trace_error_level(None)
+                        .call()
+                        .unwrap()
+        };
 
-        thread::spawn(f);
-        thread::spawn(f);
-        thread::spawn(f);
+        for _ in 0..500 {
+                thread::spawn(f);
+        }
         println!("{} from the {} thread.", "Hello".cyan(), "main".blue());
 
-        // let total_time_elapsed = start_time.elapsed();
-        // tea::info!(?total_time_elapsed);
+        let total_time_elapsed = start_time.elapsed();
+        tea::info!(?total_time_elapsed);
         // Ok(())
 }
 
