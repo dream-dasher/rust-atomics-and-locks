@@ -1,0 +1,32 @@
+//! Scratch code for [Rust Atomics and Locks](https://marabos.nl/atomics/)
+
+use std::thread;
+
+use owo_colors::OwoColorize;
+
+fn main() {
+        let numbers_1 = vec![0, 1, 2, 3, 4];
+        thread::spawn(move || {
+                for n in &numbers_1 {
+                        println!("number: {}", n.green());
+                }
+        });
+        // .join()
+        // .unwrap();
+
+        let numbers_2: Vec<i32> = (20..29).collect();
+        thread::spawn(move || {
+                for n in &numbers_2 {
+                        println!("number: {}", n.blue());
+                }
+        });
+
+        let numbers_3: Vec<i32> = (30..39).collect();
+        thread::spawn(move || {
+                for n in &numbers_3 {
+                        println!("number: {}", n.yellow());
+                }
+        });
+        // std::thread::sleep(std::time::Duration::from_millis(1));
+        println!("{} from {}", "hi there".purple(), "main".blue());
+}
