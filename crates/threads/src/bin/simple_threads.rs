@@ -31,21 +31,31 @@ fn main() {
         let args = Args::parse();
         dbg!(&args);
         for _ in 0..1 + args.repeats {
-                println!("--------------------------");
-                let mut handles = vec![];
-                for _ in 0..args.threads {
-                        let h = thread::spawn(f);
-                        handles.push(h);
-                }
-                println!("{} from the {} thread.", "Hello".cyan(), "main".blue());
-                if args.wait_on {
-                        for h in handles {
-                                h.join().unwrap();
-                        }
+                main_core(&args);
+        }
+}
+
+/// Effectively `main()`, but dropped in a function so we can easily repeat it.
+///
+/// **Note**: threads don't drop on function end as they would with `main()`-proper end.
+fn main_core(args: &Args) {
+        println!("--------------------------");
+        let mut handles = vec![];
+        for _ in 0..args.threads {
+                let h = thread::spawn(f);
+                handles.push(h);
+        }
+        println!("{} from the {} thread.", "Hello".cyan(), "main".blue());
+        if args.wait_on {
+                for h in handles {
+                        h.join().unwrap();
                 }
         }
 }
 
+/// Print, then get thread id and print again with it.
+///
+/// **Note**: `println!()` uses `std::io::Stdout::lock()`, which prevents interleaving of within-`println!()` output.
 fn f() {
         println!("{} from {} thread!", "Hello".cyan(), "another".green());
         let id = thread::current().id();
