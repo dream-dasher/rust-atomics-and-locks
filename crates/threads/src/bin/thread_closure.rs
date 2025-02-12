@@ -1,4 +1,9 @@
-//! Scratch code for [Rust Atomics and Locks](https://marabos.nl/atomics/)
+//! # Scratch code for [Rust Atomics and Locks](https://marabos.nl/atomics/)
+//!
+//! ## Threads taking closures.
+//! ## **NOTE**
+//!  `move` required even with `.join()`
+//! Scoped closures can get around this, but I'm not yet sure why the `.join() is insufficient - though the return of a `Result<>` is likely a clue.
 
 use std::thread;
 

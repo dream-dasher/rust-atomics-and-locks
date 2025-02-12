@@ -1,4 +1,12 @@
-//! Scratch code for [Rust Atomics and Locks](https://marabos.nl/atomics/)
+//! # Scratch code for [Rust Atomics and Locks](https://marabos.nl/atomics/)
+//!
+//! ## Threads spawned with and without await.
+//! ## **NOTE**
+//! use of `std::io::Stdout::lock()` is used in `println!()`, resulting in atomic-like writing.
+//! Notably: thread id is not always written.
+//! I've not seen any other withihn `f()` joints, but that may just be a statistics issue.
+//! *Likely* the lock just prevents interleaving, but some other dynamics relating to writing to stdout define what sorts of behavior can occur at thread close
+//! boundaries.  (Q: what chars can be produced? Is stdout doing any sanitation on binary data written to it?)
 
 use std::thread;
 

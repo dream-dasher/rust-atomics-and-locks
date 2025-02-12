@@ -1,5 +1,4 @@
-//! Scratch code for [Rust Atomics and Locks](https://marabos.nl/atomics/)
-//!
+//! # Scratch code for [Rust Atomics and Locks](https://marabos.nl/atomics/)
 
 mod error;
 
