@@ -1,4 +1,10 @@
 //! # Scratch code for [Rust Atomics and Locks](https://marabos.nl/atomics/)
+//!
+//! ## NOTE
+//! Semi-recent edition (`thread::scope(||..)`)
+//! It is **not** guaranteed that objects will be dropepd at the end of their lifetime.
+//! This invalidated a previous "guard" based implementation, as lifetimes ordering couldn't be guaranteed in the case of a leak.
+//! (re: "The Leakpocalypse")
 
 use std::thread;
 
