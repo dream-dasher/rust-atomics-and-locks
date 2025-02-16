@@ -15,6 +15,9 @@ Separate Instruction Pointers, stacks, and registers allow threads to perform co
 shorter summary:*Shared heap; separate stacks and program progress*
 
 ## Process 
+[Operating System Concepts, 9thed, Chapter 3: Processes](https://www.cs.uic.edu/~jbell/CourseNotes/OperatingSystems/3_Processes.html)
+(pdf attached)
+
 ### (quasi-deets)
 Common across current major OSes: 
 A process has it's own memory space, including heap stack and registers.  It also has quite a bit of information related to it place in the OS (e.g. scheduling information), elements governed by OS (e.g. "files"), and some other info on neighboring processes (e.g. parent and IPC related info).
