@@ -1,5 +1,8 @@
 //! # Scratch code for [Rust Atomics and Locks](https://marabos.nl/atomics/)
 //!
+//! `scope(f)` takes a function with a `Scope` object as its argument.   This allows the compiler to infer the type of of `s` as `Scope`.
+//! Additionally `scope(f)` *generates* a scope object which ... being the only one I suppose the compiler also assumes is what's captured.
+//!
 //! ## NOTE
 //! Semi-recent edition (`thread::scope(||..)`)
 //! It is **not** guaranteed that objects will be dropepd at the end of their lifetime.
@@ -12,6 +15,8 @@ use owo_colors::OwoColorize;
 
 fn main() {
         let numbers = [0, 1, 2, 3, 4];
+        // `scope(f)` takes a function with a `Scope` object as its argument.   This allows the compiler to infer the type of of `s` as `Scope`.
+        // Additionally `scope(f)` *generates* a scope object which ... being the only one I suppose the compiler also assumes is what's captured.
         thread::scope(|s| {
                 s.spawn(|| {
                         println!("length: {}", numbers.len().cyan());
