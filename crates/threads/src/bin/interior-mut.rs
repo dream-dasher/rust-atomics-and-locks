@@ -99,6 +99,27 @@ fn main() {
         println!("------");
 
         // RwLock
-        {}
+        {
+                use std::{sync::RwLock, thread};
+                let rwl = RwLock::new(0);
+                let rwl_ref = &rwl;
+                thread::scope(|s| {
+                        for i in 0..30 {
+                                if i % 7 == 0 {
+                                        s.spawn(move || {
+                                                let mut guard = rwl_ref.write().unwrap();
+                                                *guard += 1;
+                                                println!("\ni ({}) div by 7 so rwl +1", i);
+                                        });
+                                } else {
+                                        s.spawn(move || {
+                                                let guard = rwl_ref.read();
+                                                print!("  i: {} irwl.read() = {:?}  ", i, guard);
+                                        });
+                                }
+                        }
+                        println!();
+                });
+        }
         println!("------");
 }
