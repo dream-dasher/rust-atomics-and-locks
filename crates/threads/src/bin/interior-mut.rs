@@ -72,7 +72,30 @@ fn main() {
         println!("------");
 
         // Mutex
-        {}
+        {
+                use std::{sync::Mutex, thread, time};
+                let time = time::Instant::now();
+                let n = Mutex::new(0);
+                println!("n.lock().unwrap() = {:?}", n.lock().unwrap());
+                thread::scope(|s| {
+                        for _ in 0..10 {
+                                s.spawn(|| {
+                                        let mut guard = n.lock().unwrap();
+                                        print!("  {:<4}", guard);
+                                        for _ in 0..100 {
+                                                print!("+1");
+                                                *guard += 1;
+                                        }
+                                        println!();
+                                        drop(guard); // **NOTE**: without this `drop` we will wait on the sleep of all the threads
+                                        thread::sleep(time::Duration::from_millis(500));
+                                });
+                        }
+                        // **NOTE**: the scope block the main thread until it finishes, meaning the main thread will wait the duration of at least a single `sleep` call
+                });
+                println!("n.lock().unwrap() = {:?}", n.lock().unwrap());
+                println!("time.elapsed() = {:?}", time.elapsed());
+        }
         println!("------");
 
         // RwLock
