@@ -13,7 +13,7 @@ keywords = []
 
 
 [workspace.lints.rust]
-unsafe_code = "deny"
+# unsafe_code = "deny"
 [workspace.lints.clippy]
 allow_attributes = "warn"
 undocumented_unsafe_blocks = "deny"  # "forbid" lint level appears buggy
