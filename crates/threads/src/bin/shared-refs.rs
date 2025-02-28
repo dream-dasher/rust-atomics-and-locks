@@ -6,11 +6,6 @@
 //!   - **NOTE** 2: `mov(e)`ing a reference `cop(y)`ies it
 //! - ref counting
 //!   - **NOTE**: `Arc` variant is needed for our purposes (vs `Rc`)
-//!
-//! - statics
-//! - `static ref
-//! - leaked ref
-//! - refcounting
 
 use std::{sync::Arc, thread, time::Duration};
 
