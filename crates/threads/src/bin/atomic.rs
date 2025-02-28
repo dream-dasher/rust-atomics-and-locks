@@ -4,6 +4,8 @@
 use std::{sync::atomic::{AtomicBool, Ordering::Relaxed},
           thread};
 
+use owo_colors::OwoColorize as _;
+
 fn main() {
         static STOP: AtomicBool = AtomicBool::new(false);
 
@@ -12,15 +14,16 @@ fn main() {
                 while !STOP.load(Relaxed) {
                         thread::sleep(std::time::Duration::from_millis(100))
                 }
-                println!("`STOP==true` observed. Background thread stopping.");
+                println!("`{}=={}` observed. Background thread stopping.", "STOP".red(), "true".magenta());
         });
 
+        println!("Type \"{}\" for a list of commands", "help".green());
         // loop until break at which point cleanup
         for line in std::io::stdin().lines() {
                 match line.unwrap().as_str() {
-                        "help" => println!("Available commands: help, stop"),
+                        "help" => println!("Available commands: {}, {}", "help".green(), "stop".green()),
                         "stop" => break,
-                        cmd => println!("Unknown command: {:?}\ntry: \"help\"", cmd),
+                        cmd => println!("Unknown command: {:?}\ntry: \"{}\"", cmd.blue(), "help".green()),
                 }
         }
         STOP.store(true, Relaxed);
