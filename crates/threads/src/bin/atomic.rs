@@ -1,5 +1,9 @@
 //! # Scratch code for [Rust Atomics and Locks](https://marabos.nl/atomics/)
 //! ## [Chapter 2: Atomics](https://marabos.nl/atomics/atomics.html#example-stop-flag)
+//!
+//! - Load & Store
+//! - Fetch & Modify
+//! - Compare & Exchange
 
 use std::{sync::atomic::{AtomicBool, Ordering::Relaxed},
           thread};
