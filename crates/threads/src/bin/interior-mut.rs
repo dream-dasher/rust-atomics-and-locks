@@ -38,6 +38,7 @@ fn main() {
         // Cell
         {
                 use std::cell::Cell;
+                println!("\n-----{}-----", "Cell".bold().purple());
 
                 let cell = Cell::new(0);
                 println!("cell.get() = {}", cell.get());
@@ -51,11 +52,10 @@ fn main() {
                 println!("cell.get() = {}", cell.get());
                 println!("holder = {}", holder);
         }
-        println!("------");
-
         // RefCell
         {
                 use std::cell::RefCell;
+                println!("\n-----{}-----", "RefCell".bold().purple());
 
                 let refcell = RefCell::new(0);
                 println!("refcell.borrow() = {}", refcell.borrow());
@@ -63,11 +63,10 @@ fn main() {
                 println!("- refcell.borrow_mut() = 1 ->");
                 println!("refcell.borrow() = {}", refcell.borrow());
         }
-        println!("------");
-
         // UnsafeCell
         {
                 use std::cell::UnsafeCell;
+                println!("\n-----{}-----", "UnsafeCell".bold().purple());
 
                 let unsafe_cell = UnsafeCell::new(0);
                 // SAFETY: writing a direct value through an `UnsafeCell`
@@ -80,11 +79,10 @@ fn main() {
                 // `.get()` yields a dereferenced mut value; using `into_inner()` for simplicity here
                 println!("unsafe_cell.into_inner() = {}", unsafe_cell.into_inner());
         }
-        println!("------");
-
         // OnceCell & LazyCell
         {
                 use std::cell::{LazyCell, OnceCell};
+                println!("\n-----{}-----", "OnceCell & LazyCell".bold().purple());
 
                 let celluno = OnceCell::new();
                 println!("celluno.get() = {:?}", celluno.get());
@@ -98,19 +96,18 @@ fn main() {
                 println!("{}lazcelluno = {:?}", "*".green(), *lazcelluno);
                 println!("{}lazcelluno = {:?}", "*".green(), *lazcelluno);
         }
-        println!("------");
-        println!("--concurrent options--");
-        println!("------");
-
         // Mutex
         {
                 use std::{sync::Mutex, thread, time};
+                println!("\n-----{}-----", "Mutex".bold().purple());
 
+                const TIME_PER_THREAD_WAIT: time::Duration = time::Duration::from_millis(100);
+                const NUM_THREADS: usize = 10;
                 let time = time::Instant::now();
                 let n = Mutex::new(0);
                 println!("n.lock().unwrap() = {:?}", n.lock().unwrap());
                 thread::scope(|s| {
-                        for _ in 0..10 {
+                        for _ in 0..NUM_THREADS {
                                 s.spawn(|| {
                                         let mut guard = n.lock().unwrap();
                                         print!("  {:<4}", guard);
@@ -120,19 +117,21 @@ fn main() {
                                         }
                                         println!();
                                         drop(guard); // **NOTE**: without this `drop` we will wait on the sleep of all the threads
-                                        thread::sleep(time::Duration::from_millis(500));
+                                        thread::sleep(TIME_PER_THREAD_WAIT);
                                 });
                         }
                         // **NOTE**: the scope block the main thread until it finishes, meaning the main thread will wait the duration of at least a single `sleep` call
                 });
                 println!("n.lock().unwrap() = {:?}", n.lock().unwrap());
-                println!("time.elapsed() = {:?}", time.elapsed());
-        }
-        println!("------");
 
+                println!("TIME_PER_THREAD_WAIT = {:?}", TIME_PER_THREAD_WAIT.magenta());
+                println!("NUM_THREADS = {}", NUM_THREADS.magenta());
+                println!("time.elapsed() = {:?}", time.elapsed().bold().red());
+        }
         // RwLock
         {
                 use std::sync::RwLock;
+                println!("\n-----{}-----", "RwLock".bold().purple());
 
                 let rwl = RwLock::new(0);
                 let rwl_ref = &rwl;
@@ -154,10 +153,10 @@ fn main() {
                 });
                 println!();
         }
-        println!("------");
         // Atomics
         {
                 use std::sync::atomic::{AtomicUsize, Ordering};
+                println!("\n-----{}-----", "Atomics".bold().purple());
 
                 let atomic = AtomicUsize::new(0);
                 println!("atomic.load() = {:?}", atomic.load(Ordering::SeqCst));
@@ -194,10 +193,11 @@ fn main() {
         // OnceLock & LazyLock
         {
                 use std::sync::{LazyLock, OnceLock};
+                println!("\n-----{}-----", "OnceLock & LazyLock".bold().purple());
 
                 for _ in 0..3 {
                         let once_lockos: OnceLock<i32> = OnceLock::new();
-                        println!("OnceLock not initialized: {:?}", once_lockos.get());
+                        println!("OnceLock not initialized: {:?}", once_lockos.get().magenta());
                         thread::scope(|s| {
                                 for i in 0..12 {
                                         let once_lockos_ref = &once_lockos;
@@ -212,7 +212,7 @@ fn main() {
                                         });
                                 }
                         });
-                        println!("OnceLock value: {:?}", once_lockos.get());
+                        println!("OnceLock value: {:?}", once_lockos.get().magenta());
                 }
 
                 println!("\n");
@@ -226,7 +226,6 @@ fn main() {
                                 });
                         }
                 });
-                println!("OnceLock value: {:?}", lazlocker.magenta());
+                println!("\nOnceLock value: {:?}", lazlocker.magenta());
         }
-        println!("------");
 }
