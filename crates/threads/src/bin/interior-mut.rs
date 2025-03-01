@@ -8,6 +8,7 @@
 //!     - inner readshare/writeexclusive checked at runtime
 //!     - panics on violation
 //!   - `OnceCell`
+//!     - `LazyCell` is common-case specialized variant where there is a global init pattern
 //!     - readshare-only once init'd; can only be init'd once
 //!     - use cases are different than classic inner-mute
 //!   - `UnsafeCell`
@@ -20,6 +21,7 @@
 //!     - blocks & waits to prevent violations
 //!     - (usually blocks new readers if queued writer request)
 //!   - `OnceLock`
+//!     - `LazyLock` is common-case specialized variant where there is a global init pattern
 //!     - readshare-only once init'd; can only be init'd once
 //!     - use cases are different than classic inner-mute
 //!   - `Atomics`
@@ -80,15 +82,21 @@ fn main() {
         }
         println!("------");
 
-        // OnceCell
+        // OnceCell & LazyCell
         {
-                use std::cell::OnceCell;
+                use std::cell::{LazyCell, OnceCell};
 
                 let celluno = OnceCell::new();
                 println!("celluno.get() = {:?}", celluno.get());
                 println!("celluno.get_or_init(|| 1) = {}", celluno.get_or_init(|| 1));
                 println!("celluno.get_or_init(|| 2) = {}", celluno.get_or_init(|| 2));
                 println!("celluno.get_or_init(|| 3) = {}", celluno.get_or_init(|| 3));
+
+                let lazcelluno = LazyCell::new(|| 4);
+                println!("lazcelluno = {:?}", lazcelluno);
+                println!("{}lazcelluno = {:?}", "*".green(), *lazcelluno);
+                println!("{}lazcelluno = {:?}", "*".green(), *lazcelluno);
+                println!("{}lazcelluno = {:?}", "*".green(), *lazcelluno);
         }
         println!("------");
         println!("--concurrent options--");
@@ -183,9 +191,9 @@ fn main() {
                 });
                 println!("atomic.load() = {:?}", atomic.load(Ordering::SeqCst));
         }
-        // OnceLock
+        // OnceLock & LazyLock
         {
-                use std::sync::OnceLock;
+                use std::sync::{LazyLock, OnceLock};
 
                 for _ in 0..3 {
                         let once_lockos: OnceLock<i32> = OnceLock::new();
@@ -206,6 +214,19 @@ fn main() {
                         });
                         println!("OnceLock value: {:?}", once_lockos.get());
                 }
+
+                println!("\n");
+                let lazlocker: LazyLock<i32> = LazyLock::new(|| 1121);
+                println!("LazyLock value: {:?}", lazlocker.magenta());
+                thread::scope(|s| {
+                        for _ in 0..3 {
+                                s.spawn(|| {
+                                        thread::sleep(Duration::from_millis(100));
+                                        println!("    lazyLock value: {:?}", (*lazlocker).blue());
+                                });
+                        }
+                });
+                println!("OnceLock value: {:?}", lazlocker.magenta());
         }
         println!("------");
 }
