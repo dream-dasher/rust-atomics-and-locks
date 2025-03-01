@@ -1,5 +1,7 @@
 //! # Scratch code for [Rust Atomics and Locks](https://marabos.nl/atomics/)
 //!
+//! ## [Chapter 1: Basics of Rust Concurrency](https://marabos.nl/atomics/basics.html#threads)
+//!
 //! ## Threads spawned with and without await.
 //! ## **NOTE**
 //! use of `std::io::Stdout::lock()` is used in `println!()`, resulting in atomic-like writing.
@@ -29,6 +31,7 @@ struct Args {
 }
 fn main() {
         let args = Args::parse();
+        println!("\n-----{}-----", "Simple Threads".bold().purple());
         dbg!(&args);
         for _ in 0..1 + args.repeats {
                 main_core(&args);

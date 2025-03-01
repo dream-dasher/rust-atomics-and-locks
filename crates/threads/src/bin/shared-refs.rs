@@ -1,5 +1,7 @@
 //! # Scratch code for [Rust Atomics and Locks](https://marabos.nl/atomics/)
 //!
+//! ## [Chapter 1: Basics of Rust Concurrency](https://marabos.nl/atomics/basics.html#shared-ownership-and-reference-counting)
+//!
 //! - static variable initialized with const variables
 //! - leak
 //!   - **NOTE** 1: we need to explicitly note the type as `&'static` -- by default it is `&'static mut`, which can't be shared
@@ -9,8 +11,11 @@
 
 use std::{sync::Arc, thread, time::Duration};
 
+use owo_colors::OwoColorize;
+
 fn main() {
         {
+                println!("\n-----{}-----", "statics & constants for multithread use".magenta());
                 // static variable initialized with const variables
                 static STATOS_VAROS: [i32; 7] = [0, 1, 2, 3, 4, 5, 6];
                 thread::spawn(|| println!("STATOS_VAROS: {:?}", STATOS_VAROS));
@@ -21,8 +26,8 @@ fn main() {
                 thread::spawn(|| println!("CONSTOS_VAROS: {:?}", CONSTOS_VAROS));
         }
         thread::sleep(Duration::from_millis(100));
-        println!("----");
         {
+                println!("\n-----{}-----", "leak for multithread use".magenta());
                 // leak
                 // **NOTE** 1: we need to explicitly note the type as `&'static` -- by default it is `&'static mut`, which can't be shared
                 // **NOTE** 2: `mov(e)`ing a reference `cop(y)`ies it
@@ -37,8 +42,8 @@ fn main() {
                 thread::spawn(move || println!("boxos_leaked: {:?}", boxos_leaked));
         }
         thread::sleep(Duration::from_millis(100));
-        println!("----");
         {
+                println!("\n-----{}-----", "refcounting for multithread use".magenta());
                 // ref counting
                 // **NOTE**: `Arc` variant is needed for our purposes (vs `Rc`)
                 let arc_count = Arc::new([50, 51]);

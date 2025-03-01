@@ -1,5 +1,7 @@
 //! # Scratch code for [Rust Atomics and Locks](https://marabos.nl/atomics/)
 //!
+//! ## [Chapter 1: Basics of Rust Concurrency](https://marabos.nl/atomics/basics.html#threads)
+//!
 //! ## Threads taking closures.
 //! ## **NOTE**
 //!  `move` required even with `.join()`
@@ -10,6 +12,7 @@ use std::thread;
 use owo_colors::OwoColorize;
 
 fn main() {
+        println!("\n-----{}-----", "Thread Closures".bold().purple());
         let to_sum = Vec::from_iter(0..=1000);
         let t = thread::spawn(move || {
                 let sum: isize = to_sum.iter().sum();
