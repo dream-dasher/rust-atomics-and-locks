@@ -5,7 +5,7 @@
 //! - Fetch_&_Modify
 //! - Compare_&_Exchange
 
-use std::{sync::atomic::{AtomicBool, AtomicUsize, Ordering::Relaxed},
+use std::{sync::atomic::{AtomicBool, AtomicI64, AtomicIsize, AtomicUsize, Ordering::Relaxed},
           thread};
 
 use owo_colors::{OwoColorize as _, XtermColors};
@@ -39,16 +39,34 @@ fn main() {
                 println!("\n-----{}-----", "Fetch_&_Modify: Synchronization".bold().purple());
                 const NUM_THREADS: usize = 50;
                 const ADDS_PER_THREAD: usize = 100;
+
                 let atomic_num_done = &AtomicUsize::new(0);
+                let atomic_max_diff = &AtomicUsize::new(0);
                 let main_thread_handle = &thread::current(); // for unparking
                 thread::scope(|s| {
                         // 'background thread' processing 100 items
                         for t in 0..NUM_THREADS {
                                 s.spawn(move || {
                                         let thread_color = XtermColors::from(t as u8);
+                                        let mut max_diff: usize = 0;
+                                        let mut last_counter_value = 0;
+
                                         for _ in t..(t + ADDS_PER_THREAD) {
                                                 thread::sleep(std::time::Duration::from_millis(2)); // fake processing
-                                                atomic_num_done.fetch_add(1, Relaxed);
+                                                // fetch_add & get current value of counter
+                                                let incoming_counter_value = atomic_num_done.fetch_add(1, Relaxed);
+
+                                                // calculate max diff observed between `num_done` counter observations
+                                                let curr_diff = incoming_counter_value
+                                                        .checked_sub(last_counter_value)
+                                                        .expect("values should be monotonic increasing");
+                                                if curr_diff > max_diff {
+                                                        max_diff = max_diff.max(curr_diff);
+                                                        atomic_max_diff.fetch_max(curr_diff, Relaxed);
+                                                }
+                                                last_counter_value = incoming_counter_value;
+
+                                                // let wake main thread (not really needed given the rapid timing of this example (I assume ..(?)))
                                                 main_thread_handle.unpark(); // wake main up
                                                 print!(
                                                         "+{}",
@@ -60,12 +78,14 @@ fn main() {
                         loop {
                                 let current_done = atomic_num_done.load(Relaxed);
                                 println!(
-                                        "\nProcessed {}/{} items",
+                                        "\nProcessed {}/{} items -- Max diff: {}",
                                         current_done.to_string().blue(),
-                                        NUM_THREADS * ADDS_PER_THREAD
+                                        NUM_THREADS * ADDS_PER_THREAD,
+                                        atomic_max_diff.load(Relaxed).green()
                                 );
                                 if current_done >= NUM_THREADS * ADDS_PER_THREAD {
                                         println!("{}", "All items processed".green());
+                                        println!("Max diff: {}", atomic_max_diff.load(Relaxed).green().bold());
                                         break;
                                 } else {
                                         thread::park(); // for efficiency
