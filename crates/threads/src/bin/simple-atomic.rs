@@ -104,7 +104,8 @@ fn main() {
                                 // **NOTE**: we're not guaranteed that no change happened between last call and next, only that value is the same.
                                 loop {
                                         let new_value = current + 1;
-                                        match atomic_num.compare_exchange(current, new_value, Relaxed, Relaxed) {
+                                        // we use `_weak` as our loop allows for "spurious failures" and the op may be more efficient (potentially platform dependent)
+                                        match atomic_num.compare_exchange_weak(current, new_value, Relaxed, Relaxed) {
                                                 Ok(previous_value) => {
                                                         if previous_value != current {
                                                                 unreachable!("");
