@@ -6,10 +6,9 @@
 //! - Compare_&_Exchange
 
 use std::{sync::atomic::{AtomicBool, AtomicUsize, Ordering::Relaxed},
-          thread,
-          time::Duration};
+          thread};
 
-use owo_colors::{Color, OwoColorize as _, XtermColors};
+use owo_colors::{OwoColorize as _, XtermColors};
 
 fn main() {
         static STOP: AtomicBool = AtomicBool::new(false);
