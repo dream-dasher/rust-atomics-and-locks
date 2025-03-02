@@ -5,7 +5,7 @@
 //! - Fetch_&_Modify
 //! - Compare_&_Exchange
 
-use std::{sync::atomic::{AtomicBool, AtomicI64, AtomicIsize, AtomicUsize, Ordering::Relaxed},
+use std::{sync::atomic::{AtomicBool, AtomicIsize, AtomicUsize, Ordering::Relaxed},
           thread};
 
 use owo_colors::{OwoColorize as _, XtermColors};
@@ -93,5 +93,53 @@ fn main() {
                                 }
                         }
                 });
+                {
+                        println!("\n-----{}-----", "Compare_&_Exchange: Is really odd in its use...".bold().purple());
+                        /// Increments the atomic number by one using compare_exchange.
+                        /// Loads, creates new value from it, then non-atomically moves to a loop.
+                        /// (I'm uncertain what the advantage would be over the stricter behavior coming from a mutex.)
+                        fn plus_just_one(atomic_num: &AtomicIsize) -> (isize, isize) {
+                                let mut current = atomic_num.load(Relaxed);
+                                // things could change here; if so we try again
+                                // **NOTE**: we're not guaranteed that no change happened between last call and next, only that value is the same.
+                                loop {
+                                        let new_value = current + 1;
+                                        match atomic_num.compare_exchange(current, new_value, Relaxed, Relaxed) {
+                                                Ok(previous_value) => {
+                                                        if previous_value != current {
+                                                                unreachable!("");
+                                                        }
+                                                        return (previous_value, new_value);
+                                                }
+                                                Err(observed_val) => current = observed_val,
+                                        }
+                                }
+                        }
+
+                        let atomic_num = &AtomicIsize::new(0);
+                        let no_non_one_diffs = &AtomicBool::new(true);
+                        thread::scope(|s| {
+                                for t in 0..10 {
+                                        s.spawn(move || {
+                                                for _ in 0..10 {
+                                                        let thread_color = XtermColors::from(t as u8);
+                                                        let (previous_value, new_value) = plus_just_one(atomic_num);
+                                                        let diff = new_value - previous_value;
+                                                        print!("diff: {}, ", diff.color(thread_color));
+                                                        if diff != 1 {
+                                                                no_non_one_diffs.store(false, Relaxed);
+                                                        }
+                                                }
+                                        });
+                                }
+                        });
+                        println!();
+                        if no_non_one_diffs.load(Relaxed) {
+                                println!("{}", "All diffs were 1.".blue());
+                        } else {
+                                println!("{}", "Some diffs were not 1!!!".red().bold().italic());
+                                unreachable!("All diffs should be 1");
+                        }
+                }
         }
 }
