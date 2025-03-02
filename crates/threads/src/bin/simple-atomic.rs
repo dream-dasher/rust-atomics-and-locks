@@ -6,7 +6,8 @@
 //! - Compare_&_Exchange
 
 use std::{sync::atomic::{AtomicBool, AtomicUsize, Ordering::Relaxed},
-          thread};
+          thread,
+          time::Duration};
 
 use owo_colors::{Color, OwoColorize as _, XtermColors};
 
@@ -69,6 +70,7 @@ fn main() {
                                         break;
                                 } else {
                                         thread::park(); // for efficiency
+                                        // thread::park_timeout(Duration::from_millis(1000)); // were updates much slower
                                 }
                         }
                 });
