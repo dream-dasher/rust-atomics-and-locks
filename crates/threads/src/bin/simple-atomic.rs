@@ -8,7 +8,7 @@
 use std::{sync::atomic::{AtomicBool, AtomicUsize, Ordering::Relaxed},
           thread};
 
-use owo_colors::OwoColorize as _;
+use owo_colors::{Color, OwoColorize as _, XtermColors};
 
 fn main() {
         static STOP: AtomicBool = AtomicBool::new(false);
@@ -36,24 +36,35 @@ fn main() {
                 background_thread.join().unwrap();
         }
         {
-                println!("\n-----{}-----", "Single extraThread Update Sync".bold().purple());
-                // this should really be a `fetch_add`
-                let atomic_num_done = AtomicUsize::new(0);
-                let main_thread_handle = thread::current(); // for unparking
+                println!("\n-----{}-----", "Fetch_&_Modify: Synchronization".bold().purple());
+                const NUM_THREADS: usize = 50;
+                const ADDS_PER_THREAD: usize = 100;
+                let atomic_num_done = &AtomicUsize::new(0);
+                let main_thread_handle = &thread::current(); // for unparking
                 thread::scope(|s| {
                         // 'background thread' processing 100 items
-                        s.spawn(|| {
-                                for _ in 0..100 {
-                                        thread::sleep(std::time::Duration::from_millis(10)); // fake processing
-                                        let current_done = atomic_num_done.load(Relaxed);
-                                        atomic_num_done.store(current_done + 1, Relaxed);
-                                        main_thread_handle.unpark(); // wake main up
-                                }
-                        });
+                        for t in 0..NUM_THREADS {
+                                s.spawn(move || {
+                                        let thread_color = XtermColors::from(t as u8);
+                                        for _ in t..(t + ADDS_PER_THREAD) {
+                                                thread::sleep(std::time::Duration::from_millis(2)); // fake processing
+                                                atomic_num_done.fetch_add(1, Relaxed);
+                                                main_thread_handle.unpark(); // wake main up
+                                                print!(
+                                                        "+{}",
+                                                        "1".color(thread_color), // auto-assign colors j
+                                                );
+                                        }
+                                });
+                        }
                         loop {
                                 let current_done = atomic_num_done.load(Relaxed);
-                                println!("Processed {}/100 items", current_done.blue());
-                                if current_done >= 100 {
+                                println!(
+                                        "\nProcessed {}/{} items",
+                                        current_done.to_string().blue(),
+                                        NUM_THREADS * ADDS_PER_THREAD
+                                );
+                                if current_done >= NUM_THREADS * ADDS_PER_THREAD {
                                         println!("{}", "All items processed".green());
                                         break;
                                 } else {
