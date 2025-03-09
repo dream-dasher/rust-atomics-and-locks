@@ -1,4 +1,4 @@
-# # Justfile (Convenience Command Runner)
+# Justfile (Convenience Command Runner)
 
 # rust vars
 J_CARGO_NO_WARN := '-Awarnings'
@@ -55,6 +55,7 @@ check: && _date
     cargo fmt
     typos
     committed
+    cargo machete
 
 # Show docs.
 docs: && _date
