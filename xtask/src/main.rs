@@ -48,10 +48,10 @@ enum Args {
                 primes_until: Option<usize>,
                 /// Only show primes above this number
                 #[arg(short = 'n', long = "min")]
-                primes_from:  Option<usize>,
+                primes_from: Option<usize>,
                 /// Show all primes found
                 #[arg(short, long)]
-                show:         bool,
+                show: bool,
         },
 }
 

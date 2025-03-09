@@ -5,8 +5,10 @@
 //! - Fetch_&_Modify
 //! - Compare_&_Exchange
 
-use std::{sync::atomic::{AtomicBool, AtomicIsize, AtomicUsize, Ordering::Relaxed},
-          thread};
+use std::{
+        sync::atomic::{AtomicBool, AtomicIsize, AtomicUsize, Ordering::Relaxed},
+        thread,
+};
 
 use owo_colors::{OwoColorize as _, XtermColors};
 
