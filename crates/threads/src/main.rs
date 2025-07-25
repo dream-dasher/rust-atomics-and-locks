@@ -9,15 +9,16 @@ use std::thread;
 
 use owo_colors::OwoColorize;
 
-fn main() {
+fn main() -> Result<()> {
        thread::Builder::new()
               .name("First non-main".into())
               .stack_size(1024)
               // .no_hooks()
-              .spawn(f)
-              .unwrap();
+              .spawn(f)?; // Note: this spawn allows error handling unlike default thread::spawn
        std::thread::sleep(std::time::Duration::from_secs(1));
        println!("{} from the {} thread.", "Hello".cyan(), "main".blue());
+
+       Ok(())
 }
 
 fn f() {
