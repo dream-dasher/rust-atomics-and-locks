@@ -126,7 +126,12 @@ fn main() {
                                                  let thread_color = XtermColors::from(t as u8);
                                                  let (previous_value, new_value) = plus_just_one(atomic_num);
                                                  let diff = new_value - previous_value;
-                                                 print!("diff: {}, ", diff.color(thread_color));
+                                                 print!(
+                                                        "diff: {} ({}-{}), ",
+                                                        diff.color(thread_color),
+                                                        new_value.color(thread_color),
+                                                        previous_value.color(thread_color)
+                                                 );
                                                  if diff != 1 {
                                                         no_non_one_diffs.store(false, Relaxed);
                                                  }
