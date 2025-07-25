@@ -17,7 +17,7 @@ keywords = []
 [workspace.lints.clippy]
 uninlined_format_args = "allow"     # allow `"name is {}", name` instead of `"name is {name}"`
 allow_attributes = "warn"
-undocumented_unsafe_blocks = "deny"  # "forbid" lint level appears buggy
+undocumented_unsafe_blocks = "deny" # "forbid" lint level appears buggy
 
 
 [profile.release]
@@ -34,11 +34,7 @@ futures = "0.3"
 tokio = { version = "1", features = ["full"] }
 ### - Remote -
 reqwest = { version = "0.12", features = ["cookies", "json", "rustls-tls"] }
-sqlx = { version = "0.8", features = [
-    "sqlite",
-    "runtime-tokio",
-    "tls-rustls",
-] }
+sqlx = { version = "0.8", features = ["sqlite", "runtime-tokio", "tls-rustls"] }
 ### - Accessory -
 governor = { version = "0.8" }
 url = { version = "2" }
@@ -88,7 +84,12 @@ owo-colors = "4"
 tabled = "0.17"
 json_to_table = "0.9"
 # ### - egui -
-eframe = { version = "0.31", default-features = false, features = ["default_fonts", "glow", "persistence", "wayland"] }
+eframe = { version = "0.31", default-features = false, features = [
+    "default_fonts",
+    "glow",
+    "persistence",
+    "wayland",
+] }
 egui = { version = "0.31", features = ["callstack", "document-features"] }
 egui_extras = { version = "0.30", features = [
     "datepicker",
@@ -108,7 +109,7 @@ rand = "0.9"
 
 ## --Parsing--
 regex = { version = "1", features = ["logging"] }
-monostate = "0.1"                                   # serde: constraining, zero-sized type
+monostate = "0.1"                                 # serde: constraining, zero-sized type
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 
