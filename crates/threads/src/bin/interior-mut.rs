@@ -35,197 +35,197 @@ use std::{thread, time::Duration};
 use owo_colors::OwoColorize as _;
 
 fn main() {
-        // Cell
-        {
-                use std::cell::Cell;
-                println!("\n-----{}-----", "Cell".bold().purple());
+       // Cell
+       {
+              use std::cell::Cell;
+              println!("\n-----{}-----", "Cell".bold().purple());
 
-                let cell = Cell::new(0);
-                println!("cell.get() = {}", cell.get());
-                cell.set(1);
-                println!("- cell.set (1) ->");
-                println!("cell.get() = {}", cell.get());
-                let mut holder = 17;
-                println!("holder = {}", holder);
-                holder = cell.replace(holder);
-                println!("- holder = cell.replace(holder) ->");
-                println!("cell.get() = {}", cell.get());
-                println!("holder = {}", holder);
-        }
-        // RefCell
-        {
-                use std::cell::RefCell;
-                println!("\n-----{}-----", "RefCell".bold().purple());
+              let cell = Cell::new(0);
+              println!("cell.get() = {}", cell.get());
+              cell.set(1);
+              println!("- cell.set (1) ->");
+              println!("cell.get() = {}", cell.get());
+              let mut holder = 17;
+              println!("holder = {}", holder);
+              holder = cell.replace(holder);
+              println!("- holder = cell.replace(holder) ->");
+              println!("cell.get() = {}", cell.get());
+              println!("holder = {}", holder);
+       }
+       // RefCell
+       {
+              use std::cell::RefCell;
+              println!("\n-----{}-----", "RefCell".bold().purple());
 
-                let refcell = RefCell::new(0);
-                println!("refcell.borrow() = {}", refcell.borrow());
-                *refcell.borrow_mut() = 1;
-                println!("- refcell.borrow_mut() = 1 ->");
-                println!("refcell.borrow() = {}", refcell.borrow());
-        }
-        // UnsafeCell
-        {
-                use std::cell::UnsafeCell;
-                println!("\n-----{}-----", "UnsafeCell".bold().purple());
+              let refcell = RefCell::new(0);
+              println!("refcell.borrow() = {}", refcell.borrow());
+              *refcell.borrow_mut() = 1;
+              println!("- refcell.borrow_mut() = 1 ->");
+              println!("refcell.borrow() = {}", refcell.borrow());
+       }
+       // UnsafeCell
+       {
+              use std::cell::UnsafeCell;
+              println!("\n-----{}-----", "UnsafeCell".bold().purple());
 
-                let unsafe_cell = UnsafeCell::new(0);
-                // SAFETY: writing a direct value through an `UnsafeCell`
-                // here is safe because we have exclusive access and know
-                // there are no other references
-                unsafe {
-                        *unsafe_cell.get() = 1;
-                }
-                println!("- unsafe_cell.get() = 1 ->");
-                // `.get()` yields a dereferenced mut value; using `into_inner()` for simplicity here
-                println!("unsafe_cell.into_inner() = {}", unsafe_cell.into_inner());
-        }
-        // OnceCell & LazyCell
-        {
-                use std::cell::{LazyCell, OnceCell};
-                println!("\n-----{}-----", "OnceCell & LazyCell".bold().purple());
+              let unsafe_cell = UnsafeCell::new(0);
+              // SAFETY: writing a direct value through an `UnsafeCell`
+              // here is safe because we have exclusive access and know
+              // there are no other references
+              unsafe {
+                     *unsafe_cell.get() = 1;
+              }
+              println!("- unsafe_cell.get() = 1 ->");
+              // `.get()` yields a dereferenced mut value; using `into_inner()` for simplicity here
+              println!("unsafe_cell.into_inner() = {}", unsafe_cell.into_inner());
+       }
+       // OnceCell & LazyCell
+       {
+              use std::cell::{LazyCell, OnceCell};
+              println!("\n-----{}-----", "OnceCell & LazyCell".bold().purple());
 
-                let celluno = OnceCell::new();
-                println!("celluno.get() = {:?}", celluno.get());
-                println!("celluno.get_or_init(|| 1) = {}", celluno.get_or_init(|| 1));
-                println!("celluno.get_or_init(|| 2) = {}", celluno.get_or_init(|| 2));
-                println!("celluno.get_or_init(|| 3) = {}", celluno.get_or_init(|| 3));
+              let celluno = OnceCell::new();
+              println!("celluno.get() = {:?}", celluno.get());
+              println!("celluno.get_or_init(|| 1) = {}", celluno.get_or_init(|| 1));
+              println!("celluno.get_or_init(|| 2) = {}", celluno.get_or_init(|| 2));
+              println!("celluno.get_or_init(|| 3) = {}", celluno.get_or_init(|| 3));
 
-                let lazcelluno = LazyCell::new(|| 4);
-                println!("lazcelluno = {:?}", lazcelluno);
-                println!("{}lazcelluno = {:?}", "*".green(), *lazcelluno);
-                println!("{}lazcelluno = {:?}", "*".green(), *lazcelluno);
-                println!("{}lazcelluno = {:?}", "*".green(), *lazcelluno);
-        }
-        // Mutex
-        {
-                use std::{sync::Mutex, thread, time};
-                println!("\n-----{}-----", "Mutex".bold().purple());
+              let lazcelluno = LazyCell::new(|| 4);
+              println!("lazcelluno = {:?}", lazcelluno);
+              println!("{}lazcelluno = {:?}", "*".green(), *lazcelluno);
+              println!("{}lazcelluno = {:?}", "*".green(), *lazcelluno);
+              println!("{}lazcelluno = {:?}", "*".green(), *lazcelluno);
+       }
+       // Mutex
+       {
+              use std::{sync::Mutex, thread, time};
+              println!("\n-----{}-----", "Mutex".bold().purple());
 
-                const TIME_PER_THREAD_WAIT: time::Duration = time::Duration::from_millis(100);
-                const NUM_THREADS: usize = 10;
-                let time = time::Instant::now();
-                let n = Mutex::new(0);
-                println!("n.lock().unwrap() = {:?}", n.lock().unwrap());
-                thread::scope(|s| {
-                        for _ in 0..NUM_THREADS {
-                                s.spawn(|| {
-                                        let mut guard = n.lock().unwrap();
-                                        print!("  {:<4}", guard);
-                                        for _ in 0..100 {
-                                                print!("+1");
-                                                *guard += 1;
-                                        }
-                                        println!();
-                                        drop(guard); // **NOTE**: without this `drop` we will wait on the sleep of all the threads
-                                        thread::sleep(TIME_PER_THREAD_WAIT);
-                                });
-                        }
-                        // **NOTE**: the scope block the main thread until it finishes, meaning the main thread will wait the duration of at least a single `sleep` call
-                });
-                println!("n.lock().unwrap() = {:?}", n.lock().unwrap());
+              const TIME_PER_THREAD_WAIT: time::Duration = time::Duration::from_millis(100);
+              const NUM_THREADS: usize = 10;
+              let time = time::Instant::now();
+              let n = Mutex::new(0);
+              println!("n.lock().unwrap() = {:?}", n.lock().unwrap());
+              thread::scope(|s| {
+                     for _ in 0..NUM_THREADS {
+                            s.spawn(|| {
+                                   let mut guard = n.lock().unwrap();
+                                   print!("  {:<4}", guard);
+                                   for _ in 0..100 {
+                                          print!("+1");
+                                          *guard += 1;
+                                   }
+                                   println!();
+                                   drop(guard); // **NOTE**: without this `drop` we will wait on the sleep of all the threads
+                                   thread::sleep(TIME_PER_THREAD_WAIT);
+                            });
+                     }
+                     // **NOTE**: the scope block the main thread until it finishes, meaning the main thread will wait the duration of at least a single `sleep` call
+              });
+              println!("n.lock().unwrap() = {:?}", n.lock().unwrap());
 
-                println!("TIME_PER_THREAD_WAIT = {:?}", TIME_PER_THREAD_WAIT.magenta());
-                println!("NUM_THREADS = {}", NUM_THREADS.magenta());
-                println!("time.elapsed() = {:?}", time.elapsed().bold().red());
-        }
-        // RwLock
-        {
-                use std::sync::RwLock;
-                println!("\n-----{}-----", "RwLock".bold().purple());
+              println!("TIME_PER_THREAD_WAIT = {:?}", TIME_PER_THREAD_WAIT.magenta());
+              println!("NUM_THREADS = {}", NUM_THREADS.magenta());
+              println!("time.elapsed() = {:?}", time.elapsed().bold().red());
+       }
+       // RwLock
+       {
+              use std::sync::RwLock;
+              println!("\n-----{}-----", "RwLock".bold().purple());
 
-                let rwl = RwLock::new(0);
-                let rwl_ref = &rwl;
-                thread::scope(|s| {
-                        for i in 0..30 {
-                                if i % 7 == 0 {
-                                        s.spawn(move || {
-                                                let mut guard = rwl_ref.write().unwrap();
-                                                *guard += 1;
-                                                println!("\ni ({}) div by 7 so rwl +1", i);
-                                        });
-                                } else {
-                                        s.spawn(move || {
-                                                let guard = rwl_ref.read();
-                                                print!("  i: {} irwl.read() = {:?}  ", i, guard);
-                                        });
-                                }
-                        }
-                });
-                println!();
-        }
-        // Atomics
-        {
-                use std::sync::atomic::{AtomicUsize, Ordering};
-                println!("\n-----{}-----", "Atomics".bold().purple());
+              let rwl = RwLock::new(0);
+              let rwl_ref = &rwl;
+              thread::scope(|s| {
+                     for i in 0..30 {
+                            if i % 7 == 0 {
+                                   s.spawn(move || {
+                                          let mut guard = rwl_ref.write().unwrap();
+                                          *guard += 1;
+                                          println!("\ni ({}) div by 7 so rwl +1", i);
+                                   });
+                            } else {
+                                   s.spawn(move || {
+                                          let guard = rwl_ref.read();
+                                          print!("  i: {} irwl.read() = {:?}  ", i, guard);
+                                   });
+                            }
+                     }
+              });
+              println!();
+       }
+       // Atomics
+       {
+              use std::sync::atomic::{AtomicUsize, Ordering};
+              println!("\n-----{}-----", "Atomics".bold().purple());
 
-                let atomic = AtomicUsize::new(0);
-                println!("atomic.load() = {:?}", atomic.load(Ordering::SeqCst));
-                thread::scope(|s| {
-                        s.spawn(|| {
-                                for i in 0..100 {
-                                        if i % 17 == 0 {
-                                                atomic.fetch_add(i, Ordering::SeqCst);
-                                                println!(
-                                                        "    from thread: {:?} + {}... atomic.load() = {:?}",
-                                                        thread::current().id().green(),
-                                                        i,
-                                                        atomic.load(Ordering::SeqCst)
-                                                );
-                                        }
-                                }
-                        });
-                        s.spawn(|| {
-                                for i in 0..100 {
-                                        if i % 7 == 0 {
-                                                atomic.fetch_add(i, Ordering::SeqCst);
-                                                println!(
-                                                        "    from thread: {:?} + {}... atomic.load() = {:?}",
-                                                        thread::current().id().blue(),
-                                                        i,
-                                                        atomic.load(Ordering::SeqCst)
-                                                );
-                                        }
-                                }
-                        });
-                });
-                println!("atomic.load() = {:?}", atomic.load(Ordering::SeqCst));
-        }
-        // OnceLock & LazyLock
-        {
-                use std::sync::{LazyLock, OnceLock};
-                println!("\n-----{}-----", "OnceLock & LazyLock".bold().purple());
+              let atomic = AtomicUsize::new(0);
+              println!("atomic.load() = {:?}", atomic.load(Ordering::SeqCst));
+              thread::scope(|s| {
+                     s.spawn(|| {
+                            for i in 0..100 {
+                                   if i % 17 == 0 {
+                                          atomic.fetch_add(i, Ordering::SeqCst);
+                                          println!(
+                                                 "    from thread: {:?} + {}... atomic.load() = {:?}",
+                                                 thread::current().id().green(),
+                                                 i,
+                                                 atomic.load(Ordering::SeqCst)
+                                          );
+                                   }
+                            }
+                     });
+                     s.spawn(|| {
+                            for i in 0..100 {
+                                   if i % 7 == 0 {
+                                          atomic.fetch_add(i, Ordering::SeqCst);
+                                          println!(
+                                                 "    from thread: {:?} + {}... atomic.load() = {:?}",
+                                                 thread::current().id().blue(),
+                                                 i,
+                                                 atomic.load(Ordering::SeqCst)
+                                          );
+                                   }
+                            }
+                     });
+              });
+              println!("atomic.load() = {:?}", atomic.load(Ordering::SeqCst));
+       }
+       // OnceLock & LazyLock
+       {
+              use std::sync::{LazyLock, OnceLock};
+              println!("\n-----{}-----", "OnceLock & LazyLock".bold().purple());
 
-                for _ in 0..3 {
-                        let once_lockos: OnceLock<i32> = OnceLock::new();
-                        println!("OnceLock not initialized: {:?}", once_lockos.get().magenta());
-                        thread::scope(|s| {
-                                for i in 0..12 {
-                                        let once_lockos_ref = &once_lockos;
-                                        s.spawn(move || {
-                                                thread::sleep(Duration::from_millis(100));
-                                                let val = once_lockos_ref.get_or_init(|| {
-                                                        let init_with = i;
-                                                        println!("    Initializing with value {}", init_with);
-                                                        init_with
-                                                });
-                                                print!("    OnceLock value: {:?}", val);
-                                        });
-                                }
-                        });
-                        println!("OnceLock value: {:?}", once_lockos.get().magenta());
-                }
+              for _ in 0..3 {
+                     let once_lockos: OnceLock<i32> = OnceLock::new();
+                     println!("OnceLock not initialized: {:?}", once_lockos.get().magenta());
+                     thread::scope(|s| {
+                            for i in 0..12 {
+                                   let once_lockos_ref = &once_lockos;
+                                   s.spawn(move || {
+                                          thread::sleep(Duration::from_millis(100));
+                                          let val = once_lockos_ref.get_or_init(|| {
+                                                 let init_with = i;
+                                                 println!("    Initializing with value {}", init_with);
+                                                 init_with
+                                          });
+                                          print!("    OnceLock value: {:?}", val);
+                                   });
+                            }
+                     });
+                     println!("OnceLock value: {:?}", once_lockos.get().magenta());
+              }
 
-                println!("\n");
-                let lazlocker: LazyLock<i32> = LazyLock::new(|| 1121);
-                println!("LazyLock value: {:?}", lazlocker.magenta());
-                thread::scope(|s| {
-                        for _ in 0..3 {
-                                s.spawn(|| {
-                                        thread::sleep(Duration::from_millis(100));
-                                        println!("    lazyLock value: {:?}", (*lazlocker).blue());
-                                });
-                        }
-                });
-                println!("\nOnceLock value: {:?}", lazlocker.magenta());
-        }
+              println!("\n");
+              let lazlocker: LazyLock<i32> = LazyLock::new(|| 1121);
+              println!("LazyLock value: {:?}", lazlocker.magenta());
+              thread::scope(|s| {
+                     for _ in 0..3 {
+                            s.spawn(|| {
+                                   thread::sleep(Duration::from_millis(100));
+                                   println!("    lazyLock value: {:?}", (*lazlocker).blue());
+                            });
+                     }
+              });
+              println!("\nOnceLock value: {:?}", lazlocker.magenta());
+       }
 }

@@ -45,36 +45,32 @@ const DEFAULT_ERROR_LOGGING_LEVEL: LevelFilter = LevelFilter::WARN;
 /// ```
 #[builder]
 pub fn activate_global_default_tracing_subscriber(
-        env_default_level: Option<LevelFilter>,
-        trace_error_level: Option<LevelFilter>,
+       env_default_level: Option<LevelFilter>,
+       trace_error_level: Option<LevelFilter>,
 ) -> Result<WorkerGuard, SetGlobalDefaultError> {
-        let env_default_level = env_default_level.unwrap_or(DEFAULT_LOGGING_LEVEL);
-        let trace_error_level = trace_error_level.unwrap_or(DEFAULT_ERROR_LOGGING_LEVEL);
-        let log_writer = std::io::stderr(); // can't set as constant or static
+       let env_default_level = env_default_level.unwrap_or(DEFAULT_LOGGING_LEVEL);
+       let trace_error_level = trace_error_level.unwrap_or(DEFAULT_ERROR_LOGGING_LEVEL);
+       let log_writer = std::io::stderr(); // can't set as constant or static
 
-        let envfilter_layer = tracing_subscriber::EnvFilter::builder()
-                .with_default_directive(env_default_level.into())
-                .from_env_lossy();
+       let envfilter_layer = tracing_subscriber::EnvFilter::builder().with_default_directive(env_default_level.into()).from_env_lossy();
 
-        let error_layer = ErrorLayer::default().with_filter(trace_error_level);
+       let error_layer = ErrorLayer::default().with_filter(trace_error_level);
 
-        let (non_blocking_writer, trace_writer_guard) = tracing_appender::non_blocking(log_writer);
-        let fmt_layer = tracing_subscriber::fmt::Layer::default()
-                // .compact()
-                // .pretty()
-                // .with_timer(<timer>)
-                .with_target(true)
-                .with_thread_ids(true)
-                .with_thread_names(true)
-                .with_file(true)
-                .with_line_number(true)
-                // .with_span_events(FmtSpan::FULL)
-                .with_writer(non_blocking_writer);
+       let (non_blocking_writer, trace_writer_guard) = tracing_appender::non_blocking(log_writer);
+       let fmt_layer = tracing_subscriber::fmt::Layer::default()
+              // .compact()
+              // .pretty()
+              // .with_timer(<timer>)
+              .with_target(true)
+              .with_thread_ids(true)
+              .with_thread_names(true)
+              .with_file(true)
+              .with_line_number(true)
+              // .with_span_events(FmtSpan::FULL)
+              .with_writer(non_blocking_writer);
 
-        let subscriber = tracing_subscriber::Registry::default()
-                .with(error_layer)
-                .with(fmt_layer.with_filter(envfilter_layer));
+       let subscriber = tracing_subscriber::Registry::default().with(error_layer).with(fmt_layer.with_filter(envfilter_layer));
 
-        tracing::subscriber::set_global_default(subscriber)?;
-        Ok(trace_writer_guard)
+       tracing::subscriber::set_global_default(subscriber)?;
+       Ok(trace_writer_guard)
 }

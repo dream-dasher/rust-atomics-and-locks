@@ -10,20 +10,20 @@ use std::thread;
 use owo_colors::OwoColorize;
 
 fn main() {
-        thread::Builder::new()
-                .name("First non-main".into())
-                .stack_size(1024)
-                // .no_hooks()
-                .spawn(f)
-                .unwrap();
-        std::thread::sleep(std::time::Duration::from_secs(1));
-        println!("{} from the {} thread.", "Hello".cyan(), "main".blue());
+       thread::Builder::new()
+              .name("First non-main".into())
+              .stack_size(1024)
+              // .no_hooks()
+              .spawn(f)
+              .unwrap();
+       std::thread::sleep(std::time::Duration::from_secs(1));
+       println!("{} from the {} thread.", "Hello".cyan(), "main".blue());
 }
 
 fn f() {
-        println!("{} from {} thread!", "Hello".cyan(), "another".green());
-        let id = thread::current().id();
-        println!("This is my thread id: {:?}", id.purple());
-        let name = thread::current().name().unwrap().to_string();
-        println!("This is my thread name: {:?}", name.purple());
+       println!("{} from {} thread!", "Hello".cyan(), "another".green());
+       let id = thread::current().id();
+       println!("This is my thread id: {:?}", id.purple());
+       let name = thread::current().name().unwrap().to_string();
+       println!("This is my thread name: {:?}", name.purple());
 }
