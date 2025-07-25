@@ -72,6 +72,7 @@ pub struct ErrWrapper {
 // Using custom display as debug so we can get SpanTrace auto printed.
 impl std::fmt::Debug for ErrWrapper {
        #[instrument(skip_all)]
+       #[expect(unused_braces)]
        fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result { write!(f, "{}", self) }
 }
 impl<E> From<E> for ErrWrapper
