@@ -15,6 +15,7 @@ keywords = []
 [workspace.lints.rust]
 # unsafe_code = "deny"
 [workspace.lints.clippy]
+uninlined_format_args = "allow"     # allow `"name is {}", name` instead of `"name is {name}"`
 allow_attributes = "warn"
 undocumented_unsafe_blocks = "deny"  # "forbid" lint level appears buggy
 
