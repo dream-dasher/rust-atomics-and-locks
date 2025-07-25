@@ -2,103 +2,87 @@
 # [Cargo Manifest Configuration Reference](https://doc.rust-lang.org/stable/cargo/reference/manifest.html#the-lints-section)
 
 [workspace]
-members = ["crates/*", "xtask"]
-resolver = "3"
+members =  ["crates/*", "xtask"]
+resolver =  "3"
 
 [workspace.package]
-version = "0.1.0"
-edition = "2024"
-authors = ["Ethan Skowronski-Lutz"]
+version =   "0.1.0"
+edition =   "2024"
+authors =  ["Ethan Skowronski-Lutz"]
 keywords = []
 
 
 [workspace.lints.rust]
-# unsafe_code = "deny"
+# unsafe_code = "forbid"  # (removable default)
 [workspace.lints.clippy]
-uninlined_format_args = "allow"     # allow `"name is {}", name` instead of `"name is {name}"`
-allow_attributes = "warn"
-undocumented_unsafe_blocks = "deny" # "forbid" lint level appears buggy
+uninlined_format_args =      "allow" # allow `"name is {}", name` instead of `"name is {name}"`
+allow_attributes =           "warn"  # use `#[expect(...)]` instead
+undocumented_unsafe_blocks = "deny"  # "forbid" lint level appears buggy
 
 
 [profile.release]
 codegen-units = 1
-lto = true        # true:= "fat"
-[profile.profiling] # for perf-analysis, e.g. `samply`
+lto =           true  # true:= "fat"
+
+[profile.profiling]  # for perf-analysis, e.g. `samply`
 inherits = "release"
-debug = true
+debug =    true
 
 
 [workspace.dependencies]
 ## --Async--
 futures = "0.3"
-tokio = { version = "1", features = ["full"] }
+tokio =   { version = "1", features = ["full"] }
 ### - Remote -
 reqwest = { version = "0.12", features = ["cookies", "json", "rustls-tls"] }
-sqlx = { version = "0.8", features = ["sqlite", "runtime-tokio", "tls-rustls"] }
+sqlx =    { version = "0.8", features = ["sqlite", "runtime-tokio", "tls-rustls"] }
 ### - Accessory -
 governor = { version = "0.8" }
-url = { version = "2" }
+url =      { version = "2" }
 
 ## --Diagnostics--
 tracing = { version = "0.1", features = [] }
 #                  "release_max_level_warn"^"release_max_level_off"
-tracing-appender = "0.2"
-tracing-error = "0.2"
+tracing-appender =               "0.2"
+tracing-error =                  "0.2"
 tracing-subscriber = { version = "0.3", features = ["env-filter", "json"] }
-tracing-timing = "0.6"
+tracing-timing =                 "0.6"
 
 ## --Env & Files--
-arboard = "3"
-csv = "1"
-dotenvy = "0.15"
+arboard =     "3"
+csv =         "1"
+dotenvy =     "0.15"
 include_dir = "0.7"
-toml = "0.8"
-walkdir = "2"
+toml =        "0.8"
+walkdir =     "2"
 ### Config
-config = "0.15"
+config =      "0.15"
 directories = "6.0"
 ### System & Processes
 rexpect = { version = "0.6", features = ["which"] }
 
 ## --Ergonomics--
-bon = "3"
+bon =                     "3"
 derive_more = { version = "2", features = ["full"] }
-indoc = "2"
-itertools = "0.14"
-nestify = "0.3"
-strum = { version = "0.26", features = ["derive", "phf"] }
+indoc =                   "2"
+itertools =               "0.14"
+nestify =                 "0.3"
+strum =       { version = "0.26", features = ["derive", "phf"] }
 
 ## --Interface--
 ### - CLI -
-clap = { version = "4", features = [
-    "env",
-    "cargo",
-    "derive",
-    "string",
-    "unicode",
-    "wrap_help",
-] }
+clap =    { version = "4", features = ["env","cargo","derive","string","unicode","wrap_help",] }
 clap-verbosity-flag = "3"
-dialoguer = "0.11"
-owo-colors = "4"
-tabled = "0.17"
-json_to_table = "0.9"
+dialoguer =           "0.11"
+owo-colors =          "4"
+tabled =              "0.17"
+json_to_table =       "0.9"
 # ### - egui -
-eframe = { version = "0.31", default-features = false, features = [
-    "default_fonts",
-    "glow",
-    "persistence",
-    "wayland",
-] }
-egui = { version = "0.31", features = ["callstack", "document-features"] }
-egui_extras = { version = "0.30", features = [
-    "datepicker",
-    "document-features",
-    "serde",
-    "syntect",
-] }
-egui_table = "0.2"
-egui_inbox = "0.7"
+eframe =      { version = "0.31", default-features = false, features = ["default_fonts","glow","persistence","wayland",] }
+egui =        { version = "0.31", features = ["callstack", "document-features"] }
+egui_extras = { version = "0.30", features = ["datepicker","document-features","serde","syntect",] }
+egui_table =              "0.2"
+egui_inbox =              "0.7"
 
 # ## --Math & Science--
 # ### - Data -
@@ -109,9 +93,9 @@ rand = "0.9"
 
 ## --Parsing--
 regex = { version = "1", features = ["logging"] }
-monostate = "0.1"                                 # serde: constraining, zero-sized type
+monostate =         "0.1"                                 # serde: constraining, zero-sized type
 serde = { version = "1", features = ["derive"] }
-serde_json = "1"
+serde_json =        "1"
 
 ## --Time--
 jiff = { version = "0.1", features = ["js", "logging", "serde"] }
@@ -121,18 +105,10 @@ jiff = { version = "0.1", features = ["js", "logging", "serde"] }
 ##__Benchmarking__
 divan = "0.1"
 ## __Test_Ergonomics__
-pretty_assertions = "1"
+pretty_assertions =    "1"
 test-log = { version = "0.2", features = ["trace"] }
 ## __Property Sample Testing__
-quickcheck = "1"
+quickcheck =        "1"
 quickcheck_macros = "1"
 ## __Snapshot Testing__
-insta = { version = "1", features = [
-    "clap",
-    "csv",
-    "json",
-    "redactions",
-    "serde",
-    "toml",
-    "walkdir",
-] }
+insta = { version = "1", features = ["clap","csv","json","redactions","serde","toml","walkdir",] }
