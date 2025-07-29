@@ -1,5 +1,26 @@
 # Scratch Repo to accompany [Rust Atomics and Locks](https://marabos.nl/atomics/basics.html)
 
+## Threads  (to organize)
+### Chapter 1: Basics of Rust Concurrency
+- Threads
+  - `simple-threads`
+  - `simple-scoped-threads`
+  - `thread-closure`
+- Interior Mut & share structures
+  - `interior-mut`
+  - `shared-refs`
+- Waiting
+  - `park-and-convar`
+
+### Chapter 2: Atomics
+- Atomics 
+  - Load, Store
+  - Fetch-&-Modify
+  - Compare-&-Exchange
+  - `simple-atomic`
+### Chapter 3: Memory Ordering
+
+
 ### **note**: 
 The physical copy I'm using is written for **Stable Rust v`1.66.0`** (Dec. 2022).  
 This repo, as of start, is using **Nightly Rust v`1.86.0-nightly`** (Feb. 2023).
